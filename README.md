@@ -1,6 +1,16 @@
 # gitUsingInstructions
 instructions for using git
 
+git clone [author's git link]
+git remote remove origin
+git remote add origin [my own git link]
+git push -u origin main #first time#
+
+#each time when you make changes:
+git add . #  . means all
+git commit -m "[messages]"
+git push
+
 
 ### 通用终端命令 (视频中使用，但非 Git 命令)
 
