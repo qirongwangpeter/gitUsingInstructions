@@ -1,78 +1,99 @@
-# gitUsingInstructions
-instructions for using git
+Git 命令完整分情况讨论
 
-*git clone [author's git link]
-*git remote remove origin
-*git remote add origin [my own git link]
-*git push -u origin main #first time#
+情况一：教授/别人已经有仓库，你去克隆
+bash# 1. 下载仓库到本地
+git clone [仓库的HTTPS链接]
 
-*#each time when you make changes:
-*git add . #  . means all
-*git commit -m "[messages]"
-*git push
+# 2. 进入仓库文件夹
+cd [仓库名]
+
+# 3. 创建并切换到自己的分支
+git checkout -b qirong-fetchGeoCoord
+
+# 4. 写代码...
+
+# 5. 把改动放进待提交区
+git add .
+
+# 6. 提交
+git commit -m "完成fetchGeoCoord"
+
+# 7. 上传到GitHub
+git push origin qirong-fetchGeoCoord
+
+情况二：自己从零开始建一个新仓库
+bash# 1. 先在 GitHub 网站上手动创建一个新仓库
+
+# 2. 在本地项目文件夹里初始化 git
+git init
+
+# 3. 连接刚才在GitHub创建的仓库
+git remote add origin [你的仓库HTTPS链接]
+
+# 4. 把所有文件放进待提交区
+git add .
+
+# 5. 第一次提交
+git commit -m "初始化项目"
+
+# 6. 上传到GitHub（第一次要加 -u）
+git push -u origin main
+
+-u 的意思是"以后 push/pull 默认就用这个远程仓库"，只需要第一次加。
 
 
-### 通用终端命令 (视频中使用，但非 Git 命令)
+情况三：你本地有代码，但连错了仓库（你今天的情况）
+bash# 1. 查看现在连的是哪个仓库
+git remote -v
 
-这些命令是用来在你的电脑上创建和管理文件夹/文件的，它们不是 Git 的一部分，但在使用 Git 的流程中很常用。
+# 2. 断开错误的连接
+git remote remove origin
 
-*   `mkdir gitVideo`
-    *   **注释**: **M**a**k**e **Dir**ectory 的缩写，意思是“创建一个名为 `gitVideo` 的文件夹”。
+# 3. 连接正确的仓库
+git remote add origin [正确的HTTPS链接]
 
-*   `cd gitVideo`
-    *   **注释**: **C**hange **D**irectory 的缩写，意思是“进入（切换到）`gitVideo` 这个文件夹里”。
+# 4. 先拉取远程仓库的代码（避免冲突）
+git pull origin main
 
-*   `touch index.html app.css`
-    *   **注释**: “创建两个空文件，一个叫 `index.html`，一个叫 `app.css`”。（这是 macOS/Linux 命令，在 Windows 的 CMD/PowerShell 中没有，但 Git Bash 里有）。
+# 5. 再推上去
+git push origin main
 
-*   `ls`
-    *   **注释**: **L**i**s**t 的缩写，意思是“列出当前文件夹里所有的文件和文件夹”。
+情况四：队友已经推了新代码，你要更新本地
+bash# 1. 先切换到 main 分支
+git checkout main
 
-*   `rm index.html`
-    *   **注释**: **R**e**m**ove 的缩写，意思是“删除 `index.html` 这个文件”。
+# 2. 拉取最新代码
+git pull origin main
 
----
+# 3. 切回自己的分支继续工作
+git checkout qirong-fetchGeoCoord
 
-### Git 核心命令 (视频中演示和讲解)
+情况五：写错了，想撤销
+bash# 文件改了但还没 add：直接撤销文件修改
+git restore [文件名]
 
-这些是 Git 的核心命令，用来实现版本控制。
+# 已经 add 了，但还没 commit：退回到未add状态
+git restore --staged [文件名]
 
-*   `git init`
-    *   **注释**: **Init**ialize 的缩写。在当前文件夹里初始化一个 Git 仓库。**就像视频里说的，这相当于“为你的项目（游戏）插入了一张新的记忆卡”，从此可以开始存档了。** 这是第一步。
+# 已经 commit 了：撤销最近一次commit（代码还在，只是取消提交）
+git reset --soft HEAD~1
 
-*   `git add .`
-    *   **注释**: 把当前文件夹里 **所有** 被修改或新建的文件，都添加到“暂存区”。**这是告诉 Git：“这些文件是我这次准备要存档的内容”。** 那个点 `.` 代表“所有文件”。
-    *   (视频里没演示，但 `git add <文件名>` 可以只添加某一个文件到暂存区)。
+情况六：查看各种状态
+bashgit status          # 查看哪些文件待提交/未追踪
+git branch          # 查看当前在哪个分支
+git remote -v       # 查看连接的远程仓库
+git log             # 查看完整commit历史
+git log --oneline   # 查看简洁版commit历史
 
-*   `git commit -m "..."`
-    *   **注释**: 正式创建一个“存档点”（提交）。`-m` 代表 **m**essage，后面引号里的内容就是这次存档的说明。**这是真正按下“保存”按钮，把暂存区里的所有内容拍一张快照，永久记录下来。**
+总流程对比
+情况一（克隆别人的）：
+clone → checkout -b → 写代码 → add → commit → push
 
-*   `git log`
-    *   **注释**: 查看所有的“存档”历史记录。会列出谁、在什么时候、提交了什么，以及每个存档点的唯一ID（commit hash）。
+情况二（自己新建）：
+GitHub建仓库 → git init → remote add → add → commit → push -u
 
-*   `git checkout <commit_hash>`
-    *   **注释**: **时光穿梭！** “检出”到某一个特定的历史存档点。`<commit_hash>` 就是 `git log` 里看到的那一长串唯一的ID。执行后，你的整个项目文件夹会瞬间恢复到那个存档点的状态。
+情况三（连错了）：
+remote remove → remote add → pull → push
 
-*   `git checkout master`
-    *   **注释**: 从“时光穿梭”的状态中返回，回到最新的状态。
-
-*   `git branch`
-    *   **注释**: 查看项目里所有的“分支”（可以理解为游戏的不同存档线），并且会用 `*` 标出你当前在哪条线上。
-
-*   `git checkout -b new-branch`
-    *   **注释**: 创建一个名为 `new-branch` 的新分支，并且 **立即切换** 过去。`-b` 代表 **b**ranch。**就像视频里说的，这相当于从游戏主线存档复制出一个新的存档，你可以在这个新存档上随便实验，不影响主线进度。**
-
-*   `git remote add origin <URL>`
-    *   **注释**: 将你的本地仓库与一个远程仓库（比如 GitHub 上的仓库）进行关联。`origin` 是给这个远程仓库起的一个默认的、好记的别名。`<URL>` 是远程仓库的地址。
-
-*   `git push origin master`
-    *   **注释**: **上传进度。** 把你本地 `master` 分支上的所有“存档”推送到名为 `origin` 的远程仓库。
-    *   (注：现在很多新项目默认分支名叫 `main`，所以也可能是 `git push origin main`)。
-
-*   `git push origin new-branch`
-    *   **注释**: **上传新存档线的进度。** 把你本地 `new-branch` 分支上的所有“存档”也推送到远程仓库。
-
-*   `git pull origin master`
-    *   **注释**: **下载进度。** 从远程仓库的 `master` 分支上拉取（下载）最新的改动，并与你的本地文件合并。这是与团队成员保持同步的关键命令。
-
-这个视频用非常简单的方式串起了 Git 最核心的本地操作和远程协作流程，掌握了这些命令，你就已经入门了！
+情况四（同步队友代码）：
+checkout main → pull → checkout 自己的分支
